@@ -1,7 +1,6 @@
 ﻿namespace Trivia_Assignment_backend.Models.Reponses
 {
-    public class QuestionsReponseModel
+    public class AnswersResponseModel
     {
-
     }
 }
