@@ -1,10 +1,23 @@
+using Microsoft.AspNetCore.ResponseCompression;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+});
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 65536;
+    options.SizeLimit = 65536;
+    options.UseCaseSensitivePaths = false;
+});
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -15,9 +28,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+app.UseResponseCaching();
+app.UseResponseCompression();
 
 app.Run();
