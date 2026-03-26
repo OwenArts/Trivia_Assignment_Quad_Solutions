@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Trivia_Assignment_backend.Managers;
 
 namespace Trivia_Assignment_backend.Controllers
 {
@@ -10,21 +11,22 @@ namespace Trivia_Assignment_backend.Controllers
         private int MinAmount = 1;
 
         private readonly ILogger<QuestionsController> _logger;
+        private readonly QuestionSessionManager _questionSessionManager;
 
-        public QuestionsController(ILogger<QuestionsController> logger)
+        public QuestionsController(ILogger<QuestionsController> logger, QuestionSessionManager questionSessionManager)
         {
             _logger = logger;
+            _questionSessionManager = questionSessionManager;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<String>> Get(int Amount)
+        public ActionResult<String> Get(int Amount)
         {
             if (Amount < MinAmount || Amount > MaxAmount)
-            {
                 return BadRequest($"Requested amount must be between {MinAmount} an {MaxAmount}.");
-            }
 
-            return Enumerable.Range(1, 5).Select(index => $"{Amount}").ToArray();
+            return _questionSessionManager.GetNewQuestions(Amount);
+
         }
     }
 }

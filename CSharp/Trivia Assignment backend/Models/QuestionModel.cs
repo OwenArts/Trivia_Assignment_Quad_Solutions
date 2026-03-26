@@ -2,23 +2,21 @@
 {
     public class QuestionModel
     {
-        public int QuestionIndex { get; set; }
+        public Guid QuestionId { get; set; }
         public string Question { get; set; } = string.Empty;
         public List<String> Answers { get; set; } = new List<string>();
-        private string CorrectAnswer { get; set; } = string.Empty;
         private string QuestionType { get; set; } = string.Empty;
 
-        public QuestionModel(string QuestionType, string Question, string CorrectAnswer, List<string> IncorrectAnswers) { 
+        public QuestionModel(string QuestionType, string Question, string CorrectAnswer, List<string> IncorrectAnswers, Guid QuestionId) { 
             this.QuestionType = QuestionType;
             this.Question = Question;
-            this.CorrectAnswer = CorrectAnswer;
-            this.Answers.AddRange(IncorrectAnswers);
-            this.Answers.Add(CorrectAnswer);
-        }
+            this.QuestionId = QuestionId;
 
-        public bool CheckAnswer(string Answer)
-        {
-            return Answer == CorrectAnswer;
+            var allAnswers = new List<string>(IncorrectAnswers);
+            allAnswers.Add(CorrectAnswer);
+
+            Random random = new Random();
+            this.Answers = allAnswers.OrderBy(x => random.Next()).ToList();
         }
     }
 }

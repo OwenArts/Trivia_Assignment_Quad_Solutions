@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Trivia_Assignment_backend.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = false;
 });
 builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<QuestionSessionManager>();
 
 var app = builder.Build();
 
