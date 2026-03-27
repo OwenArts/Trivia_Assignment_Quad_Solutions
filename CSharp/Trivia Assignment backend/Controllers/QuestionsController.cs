@@ -20,13 +20,17 @@ namespace Trivia_Assignment_backend.Controllers
         }
 
         [HttpGet]
-        public ActionResult<String> Get(int Amount)
+        public async Task<ActionResult<String>> GetAsync(int Amount)
         {
             if (Amount < MinAmount || Amount > MaxAmount)
                 return BadRequest($"Requested amount must be between {MinAmount} an {MaxAmount}.");
 
-            return _questionSessionManager.GetNewQuestions(Amount);
+            var questions = await _questionSessionManager.FetchQuestionsAsync(Amount);
 
+            if (questions == null || !questions.Any())
+                return BadRequest("Could not retrieve questions.");
+
+            return Ok(questions);
         }
     }
 }

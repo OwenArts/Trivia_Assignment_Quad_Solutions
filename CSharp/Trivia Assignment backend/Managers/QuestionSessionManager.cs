@@ -10,27 +10,21 @@ namespace Trivia_Assignment_backend.Managers
         private readonly Dictionary<string, List<QuestionModel>> _sessions = new Dictionary<string, List<QuestionModel>>();
         private readonly Dictionary<Guid, string> _questions = new Dictionary<Guid, string>();
         private readonly string ApiUrl = "https://opentdb.com/api.php";
+        private readonly HttpClient _httpClient = new HttpClient();
 
         public QuestionSessionManager(ILogger<QuestionSessionManager> logger)
         {
             _logger = logger;
         }
 
-        public string GetNewQuestions(int Amount)
+        public async Task<List<QuestionModel>> FetchQuestionsAsync(int Amount) 
         {
-            List<QuestionModel> questions = FetchQuestions(Amount);
-
-            return questions != null ? JsonConvert.SerializeObject(questions, Formatting.None) : "";
-        }
-
-        public List<QuestionModel> FetchQuestions(int Amount)
-        {
-            using (var client = new HttpClient())
+            using (_httpClient)
             {
-                var response = client.GetAsync($"{ApiUrl}?amount={Amount}").Result;
-                if (response.IsSuccessStatusCode) //todo fix this part - introduce method to handle api response
+                var response = await _httpClient.GetAsync($"{ApiUrl}?amount={Amount}");
+                if (response.IsSuccessStatusCode)
                 {
-                    var content = response.Content.ReadAsStringAsync().Result;
+                    var content = await response.Content.ReadAsStringAsync();
                     return TransformQuestions(content);
                 }
                 else
@@ -81,8 +75,9 @@ namespace Trivia_Assignment_backend.Managers
                 throw new ArgumentException("QuestionNotRegistered");
 
             answer.CorrectAnswer = _questions[answer.QuestionId];
+            answer.WasAnswerCorrect = answer.CorrectAnswer.Equals(answer.GivenAnswer, StringComparison.OrdinalIgnoreCase);
 
-            answer.WasAnswerCorrect = answer.CorrectAnswer.Equals(answer.GivenAnswer);
+            _questions.Remove(answer.QuestionId);
 
             return answer;
         }
