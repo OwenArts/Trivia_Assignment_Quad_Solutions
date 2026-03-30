@@ -19,6 +19,7 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = false;
 });
 builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<QuestionSessionManager>();
 
 var app = builder.Build();

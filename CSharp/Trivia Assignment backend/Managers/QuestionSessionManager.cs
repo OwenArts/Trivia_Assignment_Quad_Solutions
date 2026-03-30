@@ -12,9 +12,10 @@ namespace Trivia_Assignment_backend.Managers
         private readonly string ApiUrl = "https://opentdb.com/api.php";
         private readonly HttpClient _httpClient = new HttpClient();
 
-        public QuestionSessionManager(ILogger<QuestionSessionManager> logger)
+        public QuestionSessionManager(ILogger<QuestionSessionManager> logger, HttpClient httpClient)
         {
             _logger = logger;
+            _httpClient = httpClient;
         }
 
         public async Task<List<QuestionModel>> FetchQuestionsAsync(int Amount) 

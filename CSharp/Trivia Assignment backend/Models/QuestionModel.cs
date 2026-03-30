@@ -4,7 +4,7 @@
     {
         public Guid QuestionId { get; set; }
         public string Question { get; set; } = string.Empty;
-        public List<String> Answers { get; set; } = new List<string>();
+        public List<string> Answers { get; set; } = new List<string>();
         private string QuestionType { get; set; } = string.Empty;
 
         public QuestionModel(string QuestionType, string Question, string CorrectAnswer, List<string> IncorrectAnswers, Guid QuestionId) { 
