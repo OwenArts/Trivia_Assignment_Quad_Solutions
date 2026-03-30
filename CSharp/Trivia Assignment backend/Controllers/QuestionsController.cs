@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Trivia_Assignment_backend.Managers;
+using Trivia_Assignment_backend.Models;
 
 namespace Trivia_Assignment_backend.Controllers
 {
@@ -20,7 +21,7 @@ namespace Trivia_Assignment_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<String>> GetAsync(int Amount)
+        public async Task<ActionResult<IEnumerable<QuestionModel>>> GetAsync(int Amount)
         {
             if (Amount < MinAmount || Amount > MaxAmount)
                 return BadRequest($"Requested amount must be between {MinAmount} an {MaxAmount}.");

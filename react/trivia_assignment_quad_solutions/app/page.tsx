@@ -1,34 +1,56 @@
 "use client";
 
 import Image from "next/image";
-import {useState} from "react";
+import {SetStateAction, useState} from "react";
 
 function StartupForm() {
     const [amount, setAmount] = useState(1);
 
+    const handleChange = (event: { target: { valueAsNumber: SetStateAction<number>; }; }) => {
+        setAmount(event.target.valueAsNumber);
+    };
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        const result: string | undefined = await CallForQuestionsAsync(amount)
+        alert(JSON.stringify(result, null, 2));
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <label>Enter the number of trivia questions you wish to receive:
                 <input
                     type="number"
                     value={amount}
                     min={1} max={100} step={1}
-                    onChange={(e) => setAmount(e.target.valueAsNumber)}
+                    onChange={handleChange}
                 />
             </label>
             <br/>
             <br/>
             <button
                 className={"hover:underline"}
-                type="submit"
-                onClick={CallForQuestions}>
+                type="submit">
                 Fetch Questions
             </button>
         </form>
     )
 }
 
-function CallForQuestions(){
+async function CallForQuestionsAsync(amount: number) {
+    const url = `https://localhost:7211/Questions?Amount=${amount}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result);
+        return result;
+    } catch (error) {
+        // @ts-ignore
+        console.error(error.message);
+    }
 }
 
 export default function Home() {

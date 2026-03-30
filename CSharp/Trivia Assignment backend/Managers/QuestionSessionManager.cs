@@ -20,19 +20,16 @@ namespace Trivia_Assignment_backend.Managers
 
         public async Task<List<QuestionModel>> FetchQuestionsAsync(int Amount) 
         {
-            using (_httpClient)
+            var response = await _httpClient.GetAsync($"{ApiUrl}?amount={Amount}");
+            if (response.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync($"{ApiUrl}?amount={Amount}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return TransformQuestions(content);
-                }
-                else
-                {
-                    _logger.LogError($"Failed to fetch questions: {response.StatusCode}");
-                    return new List<QuestionModel>();
-                }
+                var content = await response.Content.ReadAsStringAsync();
+                return TransformQuestions(content);
+            }
+            else
+            {
+                _logger.LogError($"Failed to fetch questions: {response.StatusCode}");
+                return new List<QuestionModel>();
             }
         }
 
