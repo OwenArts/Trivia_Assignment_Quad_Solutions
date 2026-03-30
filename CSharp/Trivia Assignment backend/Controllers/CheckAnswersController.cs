@@ -30,7 +30,7 @@ namespace Trivia_Assignment_backend.Controllers
             {
                 foreach (var answer in questionAnswers)
                 {
-                    _questionSessionManager.CheckSingleAnswers(answer);
+                    _questionSessionManager.CheckSingleAnswer(answer);
                 }
             }
             catch (Exception ex)

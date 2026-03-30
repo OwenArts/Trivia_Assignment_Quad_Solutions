@@ -70,7 +70,7 @@ namespace Trivia_Assignment_backend.Managers
             return true;
         }
 
-        public AnswerModel CheckSingleAnswers(AnswerModel answer)
+        public AnswerModel CheckSingleAnswer(AnswerModel answer)
         {
             if (!_questions.ContainsKey(answer.QuestionId))
                 throw new ArgumentException("QuestionNotRegistered");
