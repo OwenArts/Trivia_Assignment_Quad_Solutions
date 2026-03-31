@@ -46,13 +46,11 @@ export default function QuestionsPage() {
         console.log("Selected Answer:", selectedAnswer);
 
         checkAnswerWithBackend(questionId, selectedAnswer);
-
-        alert(`Je koos: ${selectedAnswer} voor vraag ${questionId}`);
     };
 
     return (
-        <main className="p-8">
-            <h1 className="text-2xl font-bold">Answer the following questions:</h1>
+        <main className="p-8 max-w-4xl mx-auto">
+            <h1 className="text-2xl font-bold mb-6">Answer the following questions:</h1>
             {questions.map((q: QuestionModel, index: number) => (
                 <div key={index} className="mt-4 p-4 border rounded">
                     <p className="font-semibold"

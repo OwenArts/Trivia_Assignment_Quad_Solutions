@@ -19,10 +19,7 @@ function StartupForm() {
 
         try {
             // @ts-ignore
-            const result: QuestionModel[] | undefined = await CallForQuestionsAsync(amount, router)
-            if (result) {
-                alert(result[0].question);
-            }
+            await CallForQuestionsAsync(amount, router)
         } catch (e) {
             console.error("Error occured while fetching:", e);
             alert("Something went wrong with fetching the questions, try again.");
