@@ -1,6 +1,6 @@
 interface AnswerModel {
-    QuestionId: string;
-    GivenAnswer: string;
-    CorrectAnswer?: string;
-    WasAnswerCorrect?: boolean;
+    questionId: string;
+    givenAnswer: string;
+    correctAnswer?: string;
+    wasAnswerCorrect?: boolean;
 }
