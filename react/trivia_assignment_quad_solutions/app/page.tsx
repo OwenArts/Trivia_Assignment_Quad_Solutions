@@ -2,17 +2,33 @@
 
 import Image from "next/image";
 import {SetStateAction, useState} from "react";
+import {useRouter} from "next/navigation";
+import {NextRouter} from "next/router";
 
 function StartupForm() {
     const [amount, setAmount] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const handleChange = (event: { target: { valueAsNumber: SetStateAction<number>; }; }) => {
         setAmount(event.target.valueAsNumber);
     };
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        const result: string | undefined = await CallForQuestionsAsync(amount)
-        alert(JSON.stringify(result, null, 2));
+        setIsLoading(true);
+
+        try {
+            // @ts-ignore
+            const result: QuestionModel[] | undefined = await CallForQuestionsAsync(amount, router)
+            if (result) {
+                alert(result[0].question);
+            }
+        } catch (e) {
+            console.error("Error occured while fetching:", e);
+            alert("Something went wrong with fetching the questions, try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -28,15 +44,17 @@ function StartupForm() {
             <br/>
             <br/>
             <button
-                className={"hover:underline"}
-                type="submit">
-                Fetch Questions
+                type="submit"
+                disabled={isLoading}
+                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+            >
+                {isLoading ? "loading..." : "Start with the questions!"}
             </button>
         </form>
     )
 }
 
-async function CallForQuestionsAsync(amount: number) {
+async function CallForQuestionsAsync(amount: number, router: NextRouter) {
     const url = `https://localhost:7211/Questions?Amount=${amount}`;
     try {
         const response = await fetch(url);
@@ -44,8 +62,10 @@ async function CallForQuestionsAsync(amount: number) {
             throw new Error(`Response status: ${response.status}`);
         }
 
-        const result = await response.json();
-        console.log(result);
+        const result: QuestionModel = await response.json();
+        localStorage.setItem("quiz_questions", JSON.stringify(result));
+
+        await router.push("/Questions");
         return result;
     } catch (error) {
         // @ts-ignore

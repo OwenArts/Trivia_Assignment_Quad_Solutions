@@ -21,7 +21,7 @@ namespace Trivia_Assignment_backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult<String> Post([FromBody] List<AnswerModel> questionAnswers)
+        public ActionResult<List<AnswerModel>> Post([FromBody] List<AnswerModel> questionAnswers)
         {
             if (questionAnswers == null || !questionAnswers.Any())
                 return BadRequest("questionAnswers are required in the body.");
